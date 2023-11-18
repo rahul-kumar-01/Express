@@ -1,0 +1,27 @@
+<script>
+    let count = 10;
+    let signLink = document.getElementById('signLink');
+    const timer = setInterval(() => {
+        document.getElementById('count').innerText = count;
+        if(count == 0) {
+            window.location.href = '/user/signIn';
+            clearInterval(timer);
+        }
+        count = count - 1;
+    }, 500);
+</script>
+
+<% if (user) { %>
+    <h1>UserEmailId : </h1>
+    <h2>  <%= locals.user.userEmailId %> </h2>
+    <h1>UserName : </h1>
+    <h2>  <%= locals.user.userName %> </h2>
+<% } else { %>
+    <h1>Please Login </h1>
+    <h3>You will be directed to user login page in : 
+        <span id="count">10</span>
+    </h3>
+    <a href="/user/signIn" id="signLink"></a>
+<% } %>
+
+
