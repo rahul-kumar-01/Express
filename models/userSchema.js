@@ -14,12 +14,14 @@ const userSchema = new Schema({
         type:String,
         required: true
     },
+},
+{ 
+    timestamps: true 
 });
 
 
 const User = mongoose.model('User', userSchema);
-
 User.createCollection().then(function(collection) {
-    console.log('Collection is created!');
+    console.log('User Collection is created!');
 });
 module.exports = User;

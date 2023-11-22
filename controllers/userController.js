@@ -1,4 +1,5 @@
 const User  = require('../models/userSchema');
+const Post = require('../models/postSchema');
 const signIn = (req,res) =>{
     return res.render('signIn');
 }
@@ -22,7 +23,6 @@ const createUser = async (req,res) => {
 
 
 const createSession = async (req,res) => {
-    console.log(req.body);
     let usersArray  = await User.find({ userEmailId: req.body.userEmailId , userPassword : req.body.userPassword }).exec();
     if(usersArray.length > 0  && usersArray[0].userEmailId === req.body.userEmailId && usersArray[0].userPassword === req.body.userPassword){
         res.cookie('userId', usersArray[0].id,{maxAge: 6000000});
@@ -39,15 +39,16 @@ const  profile = async (req,res) => {
         user: user
     }
     res.locals.user = user;
-    console.log(res.locals);
+    // console.log(res.locals);
     return res.render('profile',{user});
 }
 
 const signOut = async (req,res) => {
-    console.log(req.cookies);
+    // console.log(req.cookies);
     res.clearCookie('userId');
     return res.redirect('/user/signIn')
 }
+
 
 
 module.exports = {
@@ -56,5 +57,5 @@ module.exports = {
     createUser,
     createSession,
     profile,
-    signOut
+    signOut,
 }

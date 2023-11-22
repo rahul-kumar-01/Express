@@ -1,0 +1,262 @@
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    .display{
+        background-color: aquamarine;
+    }
+    #post-container{
+        padding: 10px;
+        margin:auto;
+        width: 40%;
+    }
+    .comment-delete-button{
+        height: 10px;
+        width:10px;
+        background-color: red;
+        display: inline-block;
+    }
+    #post{
+        width: 100%;
+        padding: 20px;
+        min-height: 250px;
+        box-sizing: border-box;
+        height: auto;
+        position: relative;
+        background-color: white;
+        margin-bottom: 10px;
+        border-radius: 20px;
+        box-shadow: 0 0 3px lightgray;
+    }
+    .post-form-container{
+        min-height: 12%;
+        width: 100%;
+        position: relative;
+        margin:auto;
+    }
+    .post-input{
+        padding: 10px;
+        min-width: 30%;
+        border-radius: 100px;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        outline: none;
+        border:none;
+    }
+    .post-form{
+        min-height: 60vh;
+        min-width: 40vw;
+        border-radius: 20px;
+        position: fixed;
+        top:20%;
+        left: 50%;
+        padding: 20px;
+        transform: translateX(-50%);
+        visibility: hidden;
+        background-color: white;
+        opacity: 1;
+        z-index: 2;
+    }
+    .post-form input{
+        padding: 10px;
+        border-radius: 100px;
+        min-width: 80%;
+        min-height: 40%;
+    }
+    .textarea-box{
+        position: absolute;
+        top:40%;
+        transform: translateY(-40%);
+        height: 70%;
+        width: 70%;
+        border-radius: 20px;
+        padding:20px;
+    }
+    .post-btn{
+        height: 50px;
+        width: 100px;
+        padding:10px;
+        position: absolute;
+        right: 10%;
+        bottom: 0%;
+        border-radius: 20px;
+    }
+    .post-author-img{
+        height: 50px;
+        width: 50px;
+        border-radius: 50%;
+        display: inline-block;
+        box-shadow: 0 0 2px black;
+        
+    }
+    .post-author-name{
+        padding:6px;
+        display: inline-block;
+        vertical-align: top;
+    }
+    .post-content{
+        height: auto;
+        padding: 10px;
+        margin:10px;
+    }
+    .post-fotter{
+        padding: 10px;
+        margin:10px;
+    }
+    .post-delete{
+        display: inline-block;
+        vertical-align: top;
+        padding: 6px;
+        position: absolute;
+        right: 10%;;
+        
+    }
+    .post-fotter {
+        display: flex;
+        justify-content: space-around;        
+    }
+    .like-btn{
+        width: 100px;
+        padding: 5px;
+        border-radius: 100px;
+        border: none;
+        box-shadow: 0 0 2px black;
+    }
+    .comment-btn{
+        border: none;
+        width: 100px;
+        padding: 5px;
+        border-radius: 100px;
+        box-shadow: 0 0 2px black;
+    }
+    .comment-input{
+        display: inline;
+        vertical-align:top;
+        padding: 0 10px;
+        height: 40px;
+        width: 40px;;
+        margin: 8px 10px;
+        width: 70%;
+    }
+    .comment-post{
+        display: inline;
+        margin-top: 5px;
+        vertical-align: top;
+        height: 40px;
+        width: 60px;
+        padding: 10px;
+        border-radius: 100px;
+    }   
+</style>
+<body>
+
+    <% if(user){ %>
+        <form action="/user/post/createPost" method="post" class="post-form">
+            <label for="message">  <%=user.userName %> </label>
+                <textarea id="message" name="postContent" required placeholder="What do you want to talk about? " class="textarea-box"></textarea>
+            <br>
+            <button type="submit"  class="post-btn">Post</button>
+        </form>
+
+    <% } %>
+
+
+    <div class="display">
+        
+        <% if(user){ %>
+
+        <div class="post-form-container">
+            <input  id="message" value="Start a Post " readonly name="postContent"  class="post-input"></input>
+        </div>
+
+        <% } %>
+
+        <div id="post-container">
+
+            <% for (let i =0 ; i < postArray.length;  i++ ) { %>
+
+                <div id="post">
+
+                    <div class="post-author-img">
+
+                    </div>
+                    <div class="post-author-name"> <%= postArray[i].userId.userName %></div>
+
+                    <div class="post-delete">
+                        <% if (user && postArray[i].userId._id.toString() === user._id.toString()) { %>
+                            <a href="/user/post/deletePost/?postId=<%= postArray[i]._id%>&userId=<%=user._id.toString()%>" style="color: red;">Delete</a>
+                        <% } %>
+                    </div>
+
+                    <div class="post-content">
+                        <%= postArray[i].postContent %>
+                    </div>
+
+                    <hr>
+                    
+                    <div class="post-fotter">
+                        <div class="like"> <button class="like-btn">Like</button> </div>
+                        <div class="comment"><Button class="comment-btn">Comment</Button></div>
+                    </div>
+                
+                
+                    <div class="comment-container">
+                        <div>Comments:</div>
+
+                            <% if(user){ %>
+                                <form action="/user/comment/createComment/?postId=<%= postArray[i]._id %>&userId=<%= user._id.toString() %>"  method="post" >
+                                
+                                    <!-- <label for="comment">Add Comments:</label> -->
+                                    <div class="post-author-img"></div>
+                                    <input id="comment" name="commentContent" rows="4" cols="30" placeholder="Add a comment" class="comment-input"></input>
+
+                                    <input type="submit" value="Post" class="comment-post">
+                            
+                                </form>
+            
+                            <% } %>
+        
+
+        
+                            <% for(let j = 0; j< postArray[i].commentArray.length; ++j){ %>
+                                <div class="comment-box">
+                                    <%= postArray[i].commentArray[j].commentContent %>
+                                    <%=postArray[i].commentArray[j].userId.userName %>
+                                    <% if(user  && ( ( user._id.toString() === (postArray[i].commentArray[j].userId._id).toString() ) || ( user.id.toString() === (postArray[i].userId._id).toString()) ) ){ %> 
+                                    <a href="/user/comment/deleteComment/?userId=<%=user._id.toString()%>&postId=<%=postArray[i]._id%>&commentId=<%=postArray[i].commentArray[j]._id%>">
+
+                                        <span class="comment-delete-button"></span>
+                                    </a>
+                                    <% } %>
+                                    
+                                </div>
+                            <% } %>
+                    </div>  
+
+                </div>
+            <% } %>
+        
+        </div>
+
+    </div>
+
+
+    <script>
+        let postInput = document.getElementsByClassName('post-input');
+        let postForm = document.getElementsByClassName('post-form');
+        let main = document.getElementsByClassName('display');
+        postInput[0].addEventListener('click',()=>{
+            postForm[0].style.visibility = "visible";
+            main[0].style.opacity = 0.5;
+
+
+        });
+        
+    </script>
+
+
+
+
+</body>
